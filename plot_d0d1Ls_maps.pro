@@ -48,7 +48,7 @@ end
 
 function load_model_aux, name=name
 
-  filename="./data/aux/model_aux.nc"
+  filename="./data/auxilary/model_aux.nc"
   nCDFObject = Obj_New('NCDF_DATA', filename)
   var=ncdfObject -> ReadVariable(name)
 
@@ -85,7 +85,7 @@ function load_TSyear
   ;annual mean GMST calculated from each realization of LENS
   ;PI based on GMST 200year average of LENS control run 1500-1699, GMSTaa=287.122
 
-  restore,filename="./data/aux/TSgmaa.dat"
+  restore,filename="./data/auxilary/TSgmaa.dat"
   dt10_lens=fltarr(40,251)
   ;1850-2100
   dT10_lens[0,*]=smooth(TSgmaa[0,*],10,/edge_mirror)-287.122
@@ -219,7 +219,7 @@ lat_out=findgen(221)*0.25+35.
 if(N_elements(d0d1Ls_WL) EQ 0) then begin 
    restore,filename=save_dir+"d0d1Ls_WL.dat",/verbose
 endif
-if(N_elements(Ls_WL) EQ 0) then begin
+if(N_elements(Lsm_out) EQ 0) then begin
    ;only regrid season length
    Lsm_out=regrid_d0d1Ls_to_lonlat(var_in=d0d1Ls_WL[*,*,*,*,2],lon_out=lon_out,lat_out=lat_out)
 endif 

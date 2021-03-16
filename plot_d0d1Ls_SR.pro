@@ -35,7 +35,7 @@ function load_TSyear
   ;annual mean GMST calculated from each realization of LENS
   ;PI based on GMST 200year average of LENS control run 1500-1699, GMSTaa=287.122
 
-  restore,filename="./data/aux/TSgmaa.dat"
+  restore,filename="./data/auxilary/TSgmaa.dat"
   dt10_lens=fltarr(40,251)
   ;1850-2100
   dT10_lens[0,*]=smooth(TSgmaa[0,*],10,/edge_mirror)-287.122

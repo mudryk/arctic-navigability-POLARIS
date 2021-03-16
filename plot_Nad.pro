@@ -10,7 +10,7 @@ function load_TSyear
   ;PI based on GMST 200year average of
   ;LENS control run 1500-1699, GMSTaa=287.122
 
-  restore,filename="./data/aux/TSgmaa.dat"
+  restore,filename="./data/auxilary/TSgmaa.dat"
   dt10_lens=fltarr(40,251)
                                 ;1850-2100
   dT10_lens[0,*]=smooth(TSgmaa[0,*],10,/edge_mirror)-287.122
@@ -46,7 +46,7 @@ function load_community_info, lonlat=lonlat,names=names
   Cnames=strarr(50)
 
   line=''
-  file='./data/aux/northern_communities.txt'
+  file='./data/auxilary/northern_communities.txt'
   OPENR, lun,file,/get_lun
   READF, lun, line
   for i=0,49 do begin
@@ -154,7 +154,7 @@ Clonlat=load_community_info(/lonlat)
 Cnames=load_community_info(/names)
 
 ;number of realizations processed
-Nr=40                            
+Nr=2                            
 if(N_elements(Nad) EQ 0) then begin
    restore,filename=save_dir+"Nad.dat",/verbose
 endif

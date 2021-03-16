@@ -46,7 +46,7 @@ end
 
 function load_model_aux, name=name
 
-  filename="./data/aux/model_aux.nc"
+  filename="./data/auxilary/model_aux.nc"
   nCDFObject = Obj_New('NCDF_DATA', filename)
   var=ncdfObject -> ReadVariable(name)
   
@@ -165,10 +165,10 @@ function load_shipping_routes
    shipping_routes=fltarr(320,104,4)
    files=strarr(4)
    ;list of vertices forming polygons for region
-   files[0]="./data/aux/arcticbridge_region.csv"
-   files[1]="./data/aux/nwp_s_region.csv"
-   files[2]="./data/aux/nwp_n_region.csv"
-   files[3]="./data/aux/beaufort_region.csv"
+   files[0]="./data/auxilary/arcticbridge_region.csv"
+   files[1]="./data/auxilary/nwp_s_region.csv"
+   files[2]="./data/auxilary/nwp_n_region.csv"
+   files[3]="./data/auxilary/beaufort_region.csv"
 
    for route=0,3 do begin       
       data=read_csv(files[route])
@@ -251,7 +251,7 @@ function load_community_info, lonlat=lonlat,names=names
   Cnames=strarr(50)
 
   line=''
-  file='./data/aux/northern_communities.txt'
+  file='./data/auxilary/northern_communities.txt'
   OPENR, lun,file,/get_lun
   READF, lun, line
   for i=0,49 do begin
@@ -342,7 +342,7 @@ function load_TSyear
   ;PI based on GMST 200year average of LENS control run 1500-1699,
   ;GMSTaa=287.122
 
-  restore,filename="./data/aux/TSgmaa.dat"
+  restore,filename="./data/auxilary/TSgmaa.dat"
   dt10_lens=fltarr(40,251)
                                 ;1850-2100
   dT10_lens[0,*]=smooth(TSgmaa[0,*],10,/edge_mirror)-287.122
@@ -400,11 +400,12 @@ end
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;MAIN
 
-   full=0 ;process all 40 CESM-LE realizations (~100GB - data not provided)
-   r2=1   ;process 2 CESM-LE realization (r=0,1) data linked(?)
+   full=1 ;process all 40 CESM-LE realizations (~100GB - data not provided)
+   r2=0   ;process 2 CESM-LE realization (r=0,1) data linked(?)
    save_data=0
    save_dir="./data/out/"  
-
+   save_allyears=0 ;otherwise only 3 warming levels are calculated and full array is dumped
+   
    Nr=40
    if(r2) then Nr=2
    Nt=141
@@ -425,8 +426,8 @@ end
    if(r2  ) then hi=load_year_r2(year=year0,exp='20TR',var='hi_d')
    hice[*,*,0:274,*] = hi[*,*,90:364,*]
 
+ 
    for y=0,139 do begin   
-   ;for y=0,1 do begin
       print,y+year0+1
       exp='20TR'
       if (y+year0+1 GE 2006) then exp='RCP'
@@ -474,13 +475,13 @@ end
    if(save_data) then begin
       if(file_test(save_dir)) then begin
          if(full) then begin 
-            ;save,filename=save_dir+"d0d1Ls_map.dat",d0d1Ls_map
             save,filename=save_dir+"d0d1Ls_WL.dat",d0d1Ls_WL
             save,filename=save_dir+"d0d1Ls_SR.dat",d0d1Ls_SR
             save,filename=save_dir+"Nad.dat",Nad
+            if(save_allyears) then save,filename=save_dir+"d0d1Ls_map.dat",d0d1Ls_map
          endif
          if(r2) then begin 
-            save,filename=save_dir+"d0d1Lsr2_map.dat",d0d1Ls_map
+            save,filename=save_dir+"d0d1Lsr2_WL.dat",d0d1Ls_WL
             save,filename=save_dir+"d0d1Lsr2_SR.dat",d0d1Ls_SR
             save,filename=save_dir+"Nadr2.dat",Nad
          endif         

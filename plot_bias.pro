@@ -54,7 +54,7 @@ pos3[*,2]=[0.08,0.72,0.95,0.99]
 pos3[*,1]=[0.08,0.38,0.95,0.65]
 pos3[*,0]=[0.08,0.04,0.95,0.31]
 
-Nr=2
+Nr=40
 if(N_elements(d0d1Ls_SR) EQ 0) then begin
    restore,filename=save_dir+"d0d1Ls_SR.dat",/verbose
    d0d1Ls_SR[*,140,*,*,*,*]=d0d1Ls_SR[*,139,*,*,*,*]

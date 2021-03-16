@@ -223,7 +223,7 @@ rgb=load_colors()
 TVLCT,rgb[*,0],rgb[*,1],rgb[*,2]
 lc=2
 
-Nr=2 ;number of realizations processed
+Nr=40 ;number of realizations processed
 if(N_elements(d0d1Ls_SR) EQ 0) then begin
    restore,filename=save_dir+"d0d1Ls_SR.dat",/verbose
 endif 

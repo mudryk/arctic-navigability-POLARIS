@@ -20,3 +20,5 @@ a. plot_d0d1Ls_maps.pro (fig 2 using d0d1Ls_WL)
 b. plot_d0d1Ls_SR.pro   (fig 3 using d0d1Ls_SR)
 c. plot_Nad.pro         (fig 4 using Nad)
 d. plot_bias.pro        (SM-fig 1 using d0d1Ls_obs, d0d1Ls_SR)
+
+Routines above use David Fanning's netcdf file interface (ncdf_data__define.pro which has dependencies on textbox.pro, textlineformat.pro, cgerrormsg.pro)

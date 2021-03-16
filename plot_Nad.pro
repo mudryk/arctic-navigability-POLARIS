@@ -154,7 +154,7 @@ Clonlat=load_community_info(/lonlat)
 Cnames=load_community_info(/names)
 
 ;number of realizations processed
-Nr=2                            
+Nr=40                          
 if(N_elements(Nad) EQ 0) then begin
    restore,filename=save_dir+"Nad.dat",/verbose
 endif

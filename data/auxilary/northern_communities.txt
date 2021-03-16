@@ -1,0 +1,61 @@
+0	Region	Settlement			lat(N)		lon(W)
+1	1	Rigolet				54.180 	58.429
+2	1	Makkovik 			55.077	59.188
+3	1	Postville			54.910	59.802
+4	1	Hopedale			55.484	60.203
+5	1	Nain				56.542	61.693
+6	2	Kangiqsualujjuaq		58.683	65.950
+7	2	Kuujjuaq			58.107	68.400
+8	2	Tasiujaq			58.700	69.934
+9	2	Aupaluk				59.300	69.600
+10	2	Kangirsuk			60.018	70.028
+11	2	Quaqtaq				61.033	69.617
+12	2	Kangiqsujuaq			61.600	71.967
+13	2	Salluit				62.20	75.650
+14	2	Ivujivik			62.417	77.908
+15	2	Akulivik			60.800	78.200
+16	2	Puvirnituq			60.033	77.283
+17	2	Inukjuak			58.450	78.100
+18	2	Umijuak				56.533	76.550
+19	2	Sanikiluaq			56.543	79.225
+20	2	Kuujjuarapik			55.275	77.758
+21	2	Chisasibi			53.783	78.896
+22	3	Arviat				61.108	94.057
+23	3	Rankin Inlet			62.810	92.099
+24	3	Tikiraqjuaq (Whale Cove)	62.173	92.579
+25	3	Chesterfield Inlet		63.341	90.706
+26	3	CoralHarbour			64.137	83.164
+27	4	Naujaat (Repulse Bay)		66.522	86.235
+28	4	Sanirajak (Hall Beach)		68.777	81.224
+29	4	Igloolik			69.376	81.799
+30	4	Kugaaruk			68.533	89.827
+31	4	Talurjuaq 			69.537	93.527
+32	4	Uqsuqtuuq (Gjoa Haven)		68.626	95.875
+33	4	Iqaluktuuttiaq(Cambridge Bay)	69.117	105.053
+34	4	Kugluktuk 			67.826	115.095
+35	5	Paulatuk			69.351	124.069
+37	5	Tuktoyaktuk 			69.443	133.031
+36	5	Inuvik				68.362	133.731
+38	5	Aklavik				68.220	135.012
+39	5	Ulukhaktok (Holman)		70.736	117.768
+40	5	SachsHarbor			71.986	125.248
+41	8	Kinngait (CapeDorset)		64.232	76.540
+42	8	Kimmirut			62.847	69.869
+43	8	Iqaluit				63.749	68.520
+44	8	Pangniqtuuq			66.148	65.699
+45	8	Qikiqtarjuaq 			67.558	64.025	
+46	8	Kanngiqtugaapik (Clyde River)	70.474	68.586
+47	8	Mittimatalik( Pond Inlet)	72.699	77.959
+48	8	Ikpiarjuk (Arctic Bay)		73.036	85.153
+49	8	Qausuittuq (Resolute)		74.698	94.832
+50	8	Aujuittuq (Grise Fiord)		76.418	82.894
+51	6	Kaktovik 			70.133  143.616
+52	6	Nuiqsut 			70.216 	151.006
+53	6	Atqasuk 			70.478 	157.418
+54	6	Utqiagvik			71.291	156.789
+55	6	Tikigaq				68.347, 166.763
+56	6	Ulguniq				70.647	160.016
+57	6	Kikiktagruk (Kotzebue)		66.897 	162.585
+58	6	Kivalliniq (Kivalina)		67.727	164.539
+59	6	Unalakleet			63.879  160.790
+60	6	Shishmaref 			66.256	166.072

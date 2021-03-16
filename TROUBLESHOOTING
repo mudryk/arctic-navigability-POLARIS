@@ -1,0 +1,8 @@
+
+It complains of syntax errors
+
+check your paths/env vars
+requires standard IDL routines where ever they are kept on your system, 
+typically setup via an environment variable, e.g. (IDL_PATH=/usr/local/exelis/idl85/lib)
+
+

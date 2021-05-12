@@ -5,7 +5,7 @@ Procedure:
 0. Obtain and process NCAR hi_d daily sea ice thickness output, 1960-2100, 40 realizations. 
 Assumed format is 1 file per year of daily data/blocks of 10 realizations (Nr=40). 
 Subroutine also provided to read Nr=2 sample data: 1 file per year of daily data/block of 2 realizations
-Sample data linked for 1 year of 10 realizations and a 2-realization sample for 1960-2100. 
+Copy of the netcdf metadata format provided in data/model/  
 
 1. run calculate_output.pro from IDL session (e.g. >.run calculate_output.pro)
 computes first/last day of transit and season length for Nr=40 or Nr=2 data as specified

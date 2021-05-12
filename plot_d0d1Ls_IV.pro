@@ -6,25 +6,19 @@ end
 
 function load_plot_positions, reg=reg
 
-  ppos=fltarr(4,3,4)
+  ppos=fltarr(4,2,4)
 
   ;top row, columns=r=0,1,2,3
-  ppos[*,0,0]=[0.05,0.56,0.24,0.87]
-  ppos[*,0,1]=[0.30,0.56,0.49,0.87]
-  ppos[*,0,2]=[0.55,0.56,0.74,0.87]
-  ppos[*,0,3]=[0.80,0.56,0.99,0.87]
-
-  ;middle row, columns=r=0,1,2,3
-  ppos[*,1,0]=[0.05,0.23,0.24,0.54]
-  ppos[*,1,1]=[0.30,0.23,0.49,0.54]
-  ppos[*,1,2]=[0.55,0.23,0.74,0.54]
-  ppos[*,1,3]=[0.80,0.23,0.99,0.54]
+  ppos[*,0,0]=[0.05,0.48,0.24,0.86]
+  ppos[*,0,1]=[0.30,0.48,0.49,0.86]
+  ppos[*,0,2]=[0.55,0.48,0.74,0.86]
+  ppos[*,0,3]=[0.80,0.48,0.99,0.86]
 
   ;bottom rpw, columns=r=0,1,2,3  
-  ppos[*,2,0]=[0.05,0.06,0.24,0.21]
-  ppos[*,2,1]=[0.30,0.06,0.49,0.21]
-  ppos[*,2,2]=[0.55,0.06,0.74,0.21]
-  ppos[*,2,3]=[0.80,0.06,0.99,0.21]
+  ppos[*,1,0]=[0.05,0.07,0.24,0.45]
+  ppos[*,1,1]=[0.30,0.07,0.49,0.45]
+  ppos[*,1,2]=[0.55,0.07,0.74,0.45]
+  ppos[*,1,3]=[0.80,0.07,0.99,0.45]
       
   return,ppos[*,*,reg]
 end 
@@ -55,13 +49,13 @@ function load_TSyear
   return,TdateNN_lens
 end
 
-pro plot_row1,ppos=ppos, dx=dx, Lsm_risk=Lsm_risk,reg=reg, $
+pro plot_row1,ppos=ppos, dx=dx, Ls_spread=Ls_spread,reg=reg, $
               t1=t1,t2=t2,t4=t4,tdateNN_lens=tdateNN_lens,offset=offset,th=th,lc=lc
 
   regstr=['Arctic Bridge','NWP Southern Route','NWP Northern Route','Beaufort Region']
   plot,dx,fltarr(141),yrange=[0,365],charsize=1.4,xrange=[1960,2100], $
        xstyle=9,ystyle=9,font=1,position=ppos[*,0],xtickformat='(A1)',xminor=2, yminor=4, xticklen=0.04
-
+        
   plots,[0,0]+t1,[0,365],color=lc,linestyle=ls,thick=th
   plots,[0,0]+t2,[0,365],color=lc,linestyle=ls,thick=th
   plots,[0,0]+t4,[0,365],color=lc,linestyle=ls,thick=th        
@@ -70,22 +64,34 @@ pro plot_row1,ppos=ppos, dx=dx, Lsm_risk=Lsm_risk,reg=reg, $
   for y=0,139 do begin
      for sk=0,3 do begin 
        ;Ls1 regional mean time series
-        ts=reform(Lsm_risk[reg,y,sk,*])
-        yx=ts[1]                ;RIO=-10
-        yn=ts[0]                ;RIO=0
-        polyfill,[0,0,1,1,0]+y+1960,[yn,yx,yx,yn,yn],color=skc[sk],noclip=1
+        ts=reform(Ls_spread[reg,y,sk,*])
+        yx=ts[2]                ;+SD
+        yn=ts[0]                ;-SD
+        polyfill,[0,0,1,1,0]+y+1960,[yn,yx,yx,yn,yn],color=skc[sk],noclip=0   
      endfor 
+     ;sk 2/1 overlap
+     ts2=reform(Ls_spread[reg,y,2,*])
+     ts1=reform(Ls_spread[reg,y,1,*])
+     yx=ts2[2]
+     yn=ts1[0]
+     if (yx gt yn) then polyfill,[0,0,1,1,0]+y+1960,[yn,yx,yx,yn,yn],color=12,noclip=0
+     ;sk 3/2 overlap
+     ts3=reform(Ls_spread[reg,y,3,*])
+     ts2=reform(Ls_spread[reg,y,2,*])
+     yx=ts3[2]
+     yn=ts2[0]
+     if (yx gt yn) then polyfill,[0,0,1,1,0]+y+1960,[yn,yx,yx,yn,yn],color=11,noclip=0
   endfor
   skc=[3,5,7,9]
   ;add heavy lines for sk=0 when at 0/364
-  x=where(Lsm_risk[reg,0:139,0,0] EQ 364,nX) 
-  for i=0,nX-1 do plots,dx(x(i)),Lsm_risk[reg,x(i),0,0]-2,color=skc[0],psym=6,symsize=0.1,thick=3
+  x=where(Ls_spread[reg,0:139,0,1] EQ 364,nX) 
+  for i=0,nX-1 do plots,dx(x(i)),Ls_spread[reg,x(i),0,1]-2,color=skc[0],psym=6,symsize=0.1,thick=3
 
   ss=[1,1]
   cobs=[40,60,150,190]*0.
   
-        ;dark line for RIO=0 (added risk to RIO=-10 shaded above)
-  for sk=3,0,-1 do oplot,dx,Lsm_risk[reg,*,sk,0],color=skc[sk]        
+  ;dark line for RIO=0 (added risk to RIO=-10 shaded above)
+  for sk=3,0,-1 do oplot,dx,Ls_spread[reg,*,sk,1],color=skc[sk]        
         
   xyouts,ppos[0,0]-0.030,0.5*(ppos[1,0]+ppos[3,0]),'Season Length',font=1,alignment=0.5,orientation=90,charsize=0.85,/normal
         
@@ -100,10 +106,10 @@ pro plot_row1,ppos=ppos, dx=dx, Lsm_risk=Lsm_risk,reg=reg, $
   strlabel='Warming Level (!Z(00B0)C)'
   xyouts,0.5*(ppos[0,0]+ppos[2,0]),0.91,strlabel,font=1,alignment=0.5,charsize=0.85,/normal
   xyouts,0.5*(ppos[0,0]+ppos[2,0]),0.97,regstr[reg],font=1,alignment=0.5,charsize=1.1,/normal
-end 
+end  
 
 
-pro plot_row2, ppos=ppos, dx=dx, d0m_risk=d0m_risk,d1m_risk=d1m_risk, reg=reg, $
+pro plot_row2, ppos=ppos, dx=dx, d0_spread=d0_spread,d1_spread=d1_spread, reg=reg, $
                t1=t1,t2=t2,t4=t4,tdateNN_lens=tdateNN_lens,offset=offset,th=th,lc=lc
 
   plot,dx,fltarr(141),charsize=1.2, font=1,position=ppos[*,1], $
@@ -119,48 +125,48 @@ pro plot_row2, ppos=ppos, dx=dx, d0m_risk=d0m_risk,d1m_risk=d1m_risk, reg=reg, $
      for sk=0,3 do begin
         col=skc[sk]
         ;d0 regional mean time series
-        ts=reform(d0m_risk[reg,y,sk,*])
-        yn=ts[1]                ;RIO=-10
-        yx=ts[0]                ;RIO=0
-        polyfill,[0,0,1,1,0]+y+1960,[yn,yx,yx,yn,yn],color=col,noclip=1
+        ts=reform(d0_spread[reg,y,sk,*])
+        yx=ts[2]                ;+SD
+        yn=ts[0]                ;-SD
+        polyfill,[0,0,1,1,0]+y+1960,[yn,yx,yx,yn,yn],color=col,noclip=0
         ;d1 regional mean time series
-        ts=reform(d1m_risk[reg,y,sk,*])
-        yx=ts[1]                ;RIO=-10
-        yn=ts[0]                ;RIO=0
-        polyfill,[0,0,1,1,0]+y+1960,[yn,yx,yx,yn,yn],color=col,noclip=1
+        ts=reform(d1_spread[reg,y,sk,*])
+        yx=ts[2]                ;+SD
+        yn=ts[0]                ;-SD
+        polyfill,[0,0,1,1,0]+y+1960,[yn,yx,yx,yn,yn],color=col,noclip=0
      endfor
      ;sk 2/1 overlap
-     ts2=reform(d0m_risk[reg,y,2,*])
-     ts1=reform(d0m_risk[reg,y,1,*])
-     yn=ts2[1]
-     yx=ts1[0]
-     if (yx gt yn) then polyfill,[0,0,1,1,0]+y+1960,[yn,yx,yx,yn,yn],color=12,noclip=0
-     ts2=reform(d1m_risk[reg,y,2,*])
-     ts1=reform(d1m_risk[reg,y,1,*])
-     yn=ts1[0]
-     yx=ts2[1]
-     if (yx gt yn) then polyfill,[0,0,1,1,0]+y+1960,[yn,yx,yx,yn,yn],color=12,noclip=0           
-     ;sk 3/2 overlap
-     ts3=reform(d0m_risk[reg,y,3,*])
-     ts2=reform(d0m_risk[reg,y,2,*])
-     yn=ts3[1]
-     yx=ts2[0]
-     if (yx gt yn) then polyfill,[0,0,1,1,0]+y+1960,[yn,yx,yx,yn,yn],color=11,noclip=0
-     ts3=reform(d1m_risk[reg,y,3,*])
-     ts2=reform(d1m_risk[reg,y,2,*])
+     ts2=reform(d0_spread[reg,y,2,*])
+     ts1=reform(d0_spread[reg,y,1,*])
      yn=ts2[0]
-     yx=ts3[1]
-     if (yx gt yn) then polyfill,[0,0,1,1,0]+y+1960,[yn,yx,yx,yn,yn],color=11,noclip=0           
+     yx=ts1[2]
+     if (yx gt yn) then polyfill,[0,0,1,1,0]+y+1960,[yn,yx,yx,yn,yn],color=12,noclip=0
+     ts2=reform(d1_spread[reg,y,2,*])
+     ts1=reform(d1_spread[reg,y,1,*])
+     yn=ts1[0]
+     yx=ts2[2]
+     if (yx gt yn) then polyfill,[0,0,1,1,0]+y+1960,[yn,yx,yx,yn,yn],color=12,noclip=0
+     ;sk 3/2 overlap
+     ts3=reform(d0_spread[reg,y,3,*])
+     ts2=reform(d0_spread[reg,y,2,*])
+     yn=ts3[0]
+     yx=ts2[2]
+     if (yx gt yn) then polyfill,[0,0,1,1,0]+y+1960,[yn,yx,yx,yn,yn],color=11,noclip=0
+     ts3=reform(d1_spread[reg,y,3,*])
+     ts2=reform(d1_spread[reg,y,2,*])
+     yn=ts2[0]
+     yx=ts3[2]
+     if (yx gt yn) then polyfill,[0,0,1,1,0]+y+1960,[yn,yx,yx,yn,yn],color=11,noclip=0
   endfor
   skc=[3,5,7,9]
   ;add heavy lines for sk=0 when at 0/364
-  x=where(d1m_risk[reg,0:139,0,0] EQ 364,nX) & for i=0,nX-1 do plots,dx(x(i)),d1m_risk[reg,x(i),0,0]-1,color=skc[0],psym=6,symsize=0.1
-  x=where(d0m_risk[reg,0:139,0,0] EQ   0,nX) & for i=0,nX-1 do plots,dx(x(i)),d0m_risk[reg,x(i),0,0]+1,color=skc[0],psym=6,symsize=0.1
+  x=where(d1_spread[reg,0:139,0,1] EQ 364,nX) & for i=0,nX-1 do plots,dx(x(i)),d1_spread[reg,x(i),0,0]-1,color=skc[0],psym=6,symsize=0.1
+  x=where(d0_spread[reg,0:139,0,1] EQ   0,nX) & for i=0,nX-1 do plots,dx(x(i)),d0_spread[reg,x(i),0,0]+1,color=skc[0],psym=6,symsize=0.1
 
 
-  ;dark line for RIO=0 (added risk to RIO=-10 shaded above)
-  for sk=3,0,-1 do oplot,dx,d0m_risk[reg,*,sk,0],color=skc[sk]
-  for sk=3,0,-1 do oplot,dx,d1m_risk[reg,*,sk,0],color=skc[sk]
+  ;dark line for RIO=0 (added spread to RIO=-10 shaded above)
+  for sk=3,0,-1 do oplot,dx,d0_spread[reg,*,sk,1],color=skc[sk]
+  for sk=3,0,-1 do oplot,dx,d1_spread[reg,*,sk,1],color=skc[sk]
 
   xyouts,ppos[0,1]-0.020,0.5*(ppos[1,1]+ppos[3,1]),'Time of Year',font=1,alignment=0.5,orientation=90,charsize=0.85,/normal
   mstr=['A','M','J','J','A','S','O','N','D','J','F','M']
@@ -171,35 +177,11 @@ pro plot_row2, ppos=ppos, dx=dx, d0m_risk=d0m_risk,d1m_risk=d1m_risk, reg=reg, $
   axis,xaxis=0,xrange=[1960,2100],color=0,xtickformat='(A1)',xminor=2,xticks=7,xstyle=1, xticklen=0.04
   axis,xaxis=1,xrange=[1960,2100],color=0,xtickformat='(A1)',xminor=1,xticks=1,xstyle=1, xticklen=0.04
   for i=0,7 do plots,rebin(mean(tdateNN_lens[i*5+4,*],dim=2)+offset,2),[355-(i mod 2)*10,365],color=0,linestyle=0
+
+  for y=1960,2100,20 do xyouts,y-1,-25,strtrim(string(y,format='(i4)'),2),font=1,alignment=0.5,charsize=0.70
+  xyouts,0.5*(ppos[0,0]+ppos[2,0]),0.005,'Year',font=1,alignment=0.5,charsize=0.85,/normal  
 end 
 
-
-pro plot_row3, ppos=ppos, dx=dx, d1_risk=d1_risk, reg=reg, $
-               t1=t1,t2=t2,t4=t4,tdateNN_lens=tdateNN_lens,offset=offset,th=th,lc=lc,Nr=Nr
-
-  plot,dx,fltarr(141)+!Values.F_nan,yrange=[-0.2,1.2],charsize=1.4,xrange=[1960,2100], $
-       xstyle=9,font=1,position=ppos[*,2],xtickformat='(A1)',linestyle=1, $
-       ystyle=1,yticks=2,ytickv=[0,0.5,1.],yminor=5,xticks=7,xminor=2,xticklen=0.08
-
-  plots,[0,0]+t1,[-0.2,1.2],color=lc,linestyle=ls,thick=th
-  plots,[0,0]+t2,[-0.2,1.2],color=lc,linestyle=ls,thick=th
-  plots,[0,0]+t4,[-0.2,1.2],color=lc,linestyle=ls,thick=th
-
-  skc=[3,5,7,9]
-  for sk=3,0,-1 do begin
-     if(Nr GT 1) then Fsampled=total(Finite(d1_risk[reg,*,0:Nr-1,sk,0]),3)/float(Nr) else Fsampled=Finite(d1_risk[reg,*,0:Nr-1,sk,0])
-     oplot,dx,Fsampled,color=skc[sk]
-  endfor 
-  xyouts,ppos[0,2]-0.0390,0.5*(ppos[1,2]+ppos[3,2]),'Navigation',font=1,alignment=0.5,orientation=90,charsize=0.85,/normal
-  xyouts,ppos[0,2]-0.0240,0.5*(ppos[1,2]+ppos[3,2]),'Probability',font=1,alignment=0.5,orientation=90,charsize=0.85,/normal
-
-  axis,xaxis=1,xrange=[1960,2100],color=0,xtickformat='(A1)',xminor=1,xticks=1,xstyle=1
-  for i=0,7 do plots,rebin(mean(tdateNN_lens[i*5+4,*],dim=2)+offset,2),[1.15-(i mod 2)*0.05,1.2],color=0,linestyle=0
-
-  for y=1960,2100,20 do xyouts,y-1,-0.43,strtrim(string(y,format='(i4)'),2),font=1,alignment=0.5,charsize=0.70
-  xyouts,0.5*(ppos[0,0]+ppos[2,0]),0.005,'Year',font=1,alignment=0.5,charsize=0.85,/normal
-
-end 
 
 
 
@@ -210,7 +192,7 @@ end
 mydevice = !d.name
 !P.MULTI = [0, 3,2,2]
 SET_PLOT, 'ps' 
-DEVICE , filename='./figs/fig_SR.eps',  /encapsulated,/helvetica, decomposed=0,BITS_PER_PIXEL=8, COLOR=1,xsize=18.0,ysize=9.0, scale=1
+DEVICE , filename='./figs/fig_IV.eps',  /encapsulated,/helvetica, decomposed=0,BITS_PER_PIXEL=8, COLOR=1,xsize=18.0,ysize=9.0, scale=1
 device, SET_FONT='Helvetica',/tt_font
 
 
@@ -227,26 +209,32 @@ Nr=40 ;number of realizations processed
 if(N_elements(d0d1Ls_SR) EQ 0) then begin
    restore,filename=save_dir+"d0d1Ls_SR.dat",/verbose
 endif 
-
 ;missing final year
 d0d1Ls_SR[*,140,*,*,*,*]=d0d1Ls_SR[*,139,*,*,*,*]
 d0d1Ls_SR(where(d0d1Ls_SR EQ -1))=!Values.F_nan        
 ;combine RIO cutoffs        
-d0_risk=fltarr(4,141,Nr,4,2)
-d1_risk=fltarr(4,141,Nr,4,2)
-Ls_risk=fltarr(4,141,Nr,4,2)
-d0_risk[*,*,0:Nr-1,*,*]=d0d1Ls_SR[*,*,*,*,0,*]
-d1_risk[*,*,0:Nr-1,*,*]=d0d1Ls_SR[*,*,*,*,1,*]
-Ls_risk[*,*,0:Nr-1,*,*]=d0d1Ls_SR[*,*,*,*,2,*]
-d0_risk(where(d0_risk EQ -1))=!Values.F_nan
-d1_risk(where(d1_risk EQ -1))=!Values.F_nan
-Ls_risk(where(Ls_risk EQ -1))=!Values.F_nan
-;ensemble mean
-d0m_risk=mean(d0_risk,dim=3,/nan)
-d1m_risk=mean(d1_risk,dim=3,/nan)
-Lsm_risk=mean(Ls_risk,dim=3,/nan)
-        
 
+;create new arrays looking at spread across ensemble members
+d0_spread=fltarr(4,141,4,3) ;reg,years,sk,-SD/mean/+sd
+d1_spread=fltarr(4,141,4,3) ;reg,years,sk,-SD/mean/+sd
+Ls_spread=fltarr(4,141,4,3) ;reg,years,sk,-SD/mean/+sd
+
+x=d0d1Ls_SR[*,*,0:Nr-1,*,0,0] ;var=d0, RIO=0
+d0_spread[*,*,*,0]=mean(x,dim=3,/nan)-stddev(x,dim=3,/nan)
+d0_spread[*,*,*,1]=mean(x,dim=3,/nan)
+d0_spread[*,*,*,2]=mean(x,dim=3,/nan)+stddev(x,dim=3,/nan)
+
+x=d0d1Ls_SR[*,*,0:Nr-1,*,1,0] ;var=d1, RIO=0
+d1_spread[*,*,*,0]=mean(x,dim=3,/nan)-stddev(x,dim=3,/nan)
+d1_spread[*,*,*,1]=mean(x,dim=3,/nan)
+d1_spread[*,*,*,2]=mean(x,dim=3,/nan)+stddev(x,dim=3,/nan)
+
+x=d0d1Ls_SR[*,*,0:Nr-1,*,2,0] ;var=d0, RIO=0
+Ls_spread[*,*,*,0]=mean(x,dim=3,/nan)-stddev(x,dim=3,/nan)
+Ls_spread[*,*,*,1]=mean(x,dim=3,/nan)
+Ls_spread[*,*,*,2]=mean(x,dim=3,/nan)+stddev(x,dim=3,/nan)
+
+        
 dx=findgen(140)+1960
 for reg=0,3 do begin
        
@@ -263,18 +251,15 @@ for reg=0,3 do begin
         
    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
    ;Top Row
-   plot_row1, ppos=ppos, dx=dx, Lsm_risk=Lsm_risk,reg=reg, $
+   plot_row1, ppos=ppos, dx=dx, Ls_spread=Ls_spread,reg=reg, $
               t1=t1,t2=t2,t4=t4,tdateNN_lens=tdateNN_lens,offset=offset,th=th,lc=lc
         
    ;;;;;;;;;;;;;;;;;;;
    ;Second row (d0/d1)
-   plot_row2, ppos=ppos, dx=dx, d0m_risk=d0m_risk,d1m_risk=d1m_risk, reg=reg, $
+   plot_row2, ppos=ppos, dx=dx, d0_spread=d0_spread,d1_spread=d1_spread, reg=reg, $
               t1=t1,t2=t2,t4=t4,tdateNN_lens=tdateNN_lens,offset=offset,th=th,lc=lc
 
-   ;;;;;;;;;;;;;;
-   ;Third row (fraction of realizations with accessible route)
-   plot_row3, ppos=ppos, dx=dx,d1_risk=d1_risk,reg=reg, $
-              t1=t1,t2=t2,t4=t4,tdateNN_lens=tdateNN_lens,offset=offset,th=th,lc=lc, Nr=Nr
+
 endfor 
      
 DEVICE, /close

@@ -32,7 +32,7 @@ pro plot_stipple,di=di,dj=dj,path=path,xy=xy,posp=posp,ss=ss,color=col
   xc=cos(findgen(21)/20.*2*!pi)
   xs=sin(findgen(21)/20.*2*!pi)
   usersym,xc,xs,/fill
-  
+
   for i=posp[0],posp[2],di/xmax do begin 
      for j=posp[1],posp[3],dj/ymax do begin 
         polyin_count=0 
@@ -77,6 +77,19 @@ function load_plot_positions
   ppos[*,10]=[0.5133,0.095,0.7633,0.345]
   ppos[*,11]=[0.7500,0.095,1.0000,0.345]
 
+  ;ppos[*,0] =[0.0300,0.635,0.2700,0.895]
+  ;ppos[*,1] =[0.2733,0.635,0.5133,0.895]
+  ;ppos[*,2] =[0.5167,0.635,0.7567,0.895]
+  ;ppos[*,3] =[0.7600,0.635,1.0000,0.895]
+  ;ppos[*,4] =[0.0300,0.365,0.2700,0.625]
+  ;ppos[*,5] =[0.2733,0.365,0.5133,0.625]
+  ;ppos[*,6] =[0.5167,0.365,0.7567,0.625]
+  ;ppos[*,7] =[0.7600,0.365,1.0000,0.625]        
+  ;ppos[*,8] =[0.0300,0.095,0.2700,0.355]        
+  ;ppos[*,9] =[0.2733,0.095,0.5266,0.355]
+  ;ppos[*,10]=[0.5167,0.095,0.7567,0.355]
+  ;ppos[*,11]=[0.7600,0.095,1.0000,0.355]
+  
   return,ppos
 end 
 
@@ -122,7 +135,6 @@ function regrid_d0d1Ls_to_lonlat, var_in=var_in,lon_out=lon_out,lat_out=lat_out
 
   triangulate, tlon,tlat,tri
   for sk=0,3 do begin
-     print,sk
      for i=0,2 do begin 
         var_out[*,*,sk,i]=griddata(tlon,tlat,var_in[*,*,sk,i],/nearest_neighbor,triangles=tri,xout=lon_out,yout=lat_out,/grid)
      endfor 
@@ -146,9 +158,9 @@ pro plot_colorbar1
   plots,[0.,dx,dx,0.,0.]*4.+x0+dx1,[-1,-1,1,1,-1]*dy+y0,color=0,/normal
   polyfill,[0.,1,1,0.,0.]*0.005+x0+4*dx,[-1,-1,1,1,-1]*dy+y0,color=0,/normal
   for i=0,4 do begin
-     xyouts,x0+0.00+dx*i,y0-0.025,label[i],/normal,charsize=1.2,font=1,alignment=0.5
+     xyouts,x0+0.00+dx*i,y0-0.025,label[i],/normal,charsize=0.8,font=1,alignment=0.5
   endfor
-  xyouts,0.155,0.94,'Season Length [days]',font=1,charsize=1.2,alignment=0.5,/normal
+  xyouts,0.155,0.94,'Season Length [days]',font=1,charsize=0.8,alignment=0.5,/normal
 
 end 
 
@@ -169,18 +181,18 @@ pro plot_colorbar2
      polyfill,[0,3*dx,3*dx,0,0]+x0+12*dx+(i-8)*dx*3.,[-1,-1,1,1,-1]*dy+y0,color=color[i],/normal
   endfor
   ;2mo,6mo highlighting contours        
-  plots,[ 4, 4]*dx+x0,[-1,1]*dy+y0,color=3,linestyle=0,thick=10,/normal
-  plots,[12,12]*dx+x0,[-1,1]*dy+y0,color=4,linestyle=0,thick=10,/normal
+  plots,[ 4, 4]*dx+x0,[-1,1]*dy+y0,color=3,linestyle=0,thick=8,/normal
+  plots,[12,12]*dx+x0,[-1,1]*dy+y0,color=4,linestyle=0,thick=8,/normal
   for i=0,4 do begin
-     xyouts,x0-0.01+dx*i,y0-0.035,label[i],/normal,font=1,charsize=1.5
+     xyouts,x0-0.01+dx*i,y0-0.035,label[i],/normal,font=1,charsize=1.0
   endfor
   for i=5,8 do begin
-     xyouts,x0-0.01+4*dx+(i-4)*dx*2.,y0-0.035,label[i],/normal,font=1,charsize=1.5
+     xyouts,x0-0.01+4*dx+(i-4)*dx*2.,y0-0.035,label[i],/normal,font=1,charsize=1.0
   endfor
   for i=9,11 do begin
-     xyouts,x0-0.01+12*dx+(i-8)*dx*3.,y0-0.035,label[i],charsize=1.5,/normal,font=1
+     xyouts,x0-0.01+12*dx+(i-8)*dx*3.,y0-0.035,label[i],charsize=1.0,/normal,font=1
   endfor        
-  xyouts,0.525,0.06,'Additional Season Length [days]',font=1,charsize=1.5,alignment=0.5,/normal
+  xyouts,0.525,0.06,'Additional Season Length [days]',font=1,charsize=1.0,alignment=0.5,/normal
 end 
 
 ;;;;;;;;;;;;;;;;;;;;
@@ -189,7 +201,7 @@ end
 mydevice = !d.name
 !P.MULTI = [0, 3,2,2]
 SET_PLOT, 'ps' 
-DEVICE , filename='./figs/fig_map.eps',  /encapsulated,/helvetica, decomposed=0,BITS_PER_PIXEL=8, COLOR=1,xsize=11.*2.54,ysize=7.*2.54, scale=1
+DEVICE , filename='./figs/fig_map.eps',  /encapsulated,/helvetica, decomposed=0,BITS_PER_PIXEL=8, COLOR=1,xsize=18.0,ysize=11.0, scale=1
 device, SET_FONT='Helvetica',/tt_font
 
 
@@ -219,10 +231,10 @@ lat_out=findgen(221)*0.25+35.
 if(N_elements(d0d1Ls_WL) EQ 0) then begin 
    restore,filename=save_dir+"d0d1Ls_WL.dat",/verbose
 endif
-if(N_elements(Lsm_out) EQ 0) then begin
+;if(N_elements(Lsm_out) EQ 0) then begin
    ;only regrid season length
    Lsm_out=regrid_d0d1Ls_to_lonlat(var_in=d0d1Ls_WL[*,*,*,*,2],lon_out=lon_out,lat_out=lat_out)
-endif 
+;endif 
         
 
 ;;;;;;;;
@@ -243,26 +255,40 @@ for wl=0,2 do begin
       if((k GT 0)||(wl GT 0)) then begin
          ;difference
          contour,daref,lon_out,lat_out,cell_fill=1, /overplot, levels=dclevs,c_colors=dcarray_hcl
-         contour,daref,lon_out,lat_out,cell_fill=0, /overplot, levels=[60,180],c_colors=[color_2mon,color_6mon],c_thick=3
-              
+         contour,daref,lon_out,lat_out,cell_fill=0, /overplot, levels=[60,180],c_colors=[color_2mon,color_6mon],c_thick=2
+         
          ;stipple where raw array > 0.
          posp=ppos[*,p]
-         posp[2]=posp[2]-0.03
-         posp[3]=posp[3]-0.005
+         posp[0]=posp[0]+0.005
+         ;posp[2]=posp[2]-0.03
+         ;posp[3]=posp[3]-0.005
          a=(aref LT 364.)*(Lsm_out[*,*,skk,wl] GT 362.);*(1.-mask)
          contour,a,lon_out,lat_out,PATH_INFO=path, PATH_XY=xy, xstyle=1,ystyle=1,levels=0.2,/overplot  
-         plot_stipple, di=100,dj=200,path=path,xy=xy,posp=posp,ss=0.25,color=0
+         plot_stipple, di=100,dj=200,path=path,xy=xy,posp=posp,ss=0.15,color=0
       endif
       map_continents,/fill_continents,color=land_color
       map_continents,/coasts,color=coast_outline,limit=[40,180,88,330]
 
+      ;x=findgen(101)*3+170
+      ;y=fltarr(51)
+      ;for i=0,49 do plots, [x[i],x[i+1]],[y[i],y[i+1]]+50.,thick=1,color=coast_outline
+      ;for i=0,49 do plots, [x[i],x[i+1]],[y[i],y[i+1]]+60.,thick=1,color=coast_outline
+      ;for i=0,49 do plots, [x[i],x[i+1]],[y[i],y[i+1]]+70.,thick=1,color=coast_outline
+      ;for i=0,49 do plots, [x[i],x[i+1]],[y[i],y[i+1]]+80.,thick=1,color=coast_outline
+      ;x=fltarr(51)
+      ;y=findgen(51)*2.+20
+      ;for i=0,49 do plots, [x[i],x[i+1]]+200.,[y[i],y[i+1]],thick=1,color=coast_outline
+      ;for i=0,49 do plots, [x[i],x[i+1]]+250.,[y[i],y[i+1]],thick=1,color=coast_outline
+      ;for i=0,49 do plots, [x[i],x[i+1]]+300.,[y[i],y[i+1]],thick=1,color=coast_outline
+      ;for i=0,49 do plots, [x[i],x[i+1]]+350.,[y[i],y[i+1]],thick=1,color=coast_outline
+      
    endfor 
 endfor 
 
 SKstr=['Not Ice Strengthened','Category C: 1B','Category A: PC7','Category A: PC3']
-for i=0,3 do xyouts,0.5*(ppos[0,i]+ppos[2,i])-0.02,0.975,SKstr[i],alignment=0.5,font=1,charsize=1.5,/normal
-WLstr=['+1!Z(00B0)C','+2!Z(00B0)C','+4!Z(00B0)C']
-for i=0,2 do xyouts,0.015,0.5*(ppos[1,i*4]+ppos[3,i*4]),WLstr[i],font=1,alignment=0.5,orientation=90,charsize=1.5,/normal
+for i=0,3 do xyouts,0.5*(ppos[0,i]+ppos[2,i])-0.02,0.975,SKstr[i],alignment=0.5,font=1,charsize=1.1,/normal
+WLstr=['+1 !Z(00B0)C','+2 !Z(00B0)C','+4 !Z(00B0)C']
+for i=0,2 do xyouts,0.020,0.5*(ppos[1,i*4]+ppos[3,i*4]),WLstr[i],font=1,alignment=0.5,orientation=90,charsize=1.1,/normal
 
 
 plot_colorbar1

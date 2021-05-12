@@ -92,7 +92,7 @@ pro plot_table,Nadx=Nadx,Nd1OW=Nd1OW,NdOW=NdOW,plotOW=plotOW,carray=carray,sk=sk
   monstr=['J','F','M','A','M','J','J','A','S','O','N','D']
   for m=0,11 do xyouts,ms[m],-1.5,monstr[m],font=0,alignment=0.5,charsize=1.0
 
-  retSymbol = '!9' + String("260B) + '!X' ;" ;this is just to fake-close the double quote
+  retSymbol = ' '+'!9' + String("260B) + '!X' ;" ;this is just to fake-close the double quote
   xyouts,0.5*(pp[0]+pp[2]),0.91,dC+retSymbol+'C Warming Relative to Present Day',font=0,color=0,/normal,charsize=0.8,alignment=0.5
 end 
 
@@ -100,14 +100,14 @@ end
 pro plot_legend
 
   ;regions 1-4 along right
-  x0=0.95 & y0=0.88
-  xyouts,x0,y0,'1',font=0,color=0,charsize=0.9,alignment=0.5,/normal
-  x0=0.95 & y0=0.79
-  xyouts,x0,y0,'2',font=0,color=0,charsize=0.9,alignment=0.5,/normal
-  x0=0.95 & y0=0.55
-  xyouts,x0,y0,'3',font=0,color=0,charsize=0.9,alignment=0.5,/normal
-  x0=0.95 & y0=0.13
-  xyouts,x0,y0,'4',font=0,color=0,charsize=0.9,alignment=0.5,/normal
+  x0=0.95 & y0=0.85
+  xyouts,x0,y0,'1',font=0,color=0,charsize=1.5,alignment=0.5,/normal
+  x0=0.95 & y0=0.70
+  xyouts,x0,y0,'2',font=0,color=0,charsize=1.5,alignment=0.5,/normal
+  x0=0.95 & y0=0.35
+  xyouts,x0,y0,'3',font=0,color=0,charsize=1.5,alignment=0.5,/normal
+  x0=0.95 & y0=0.12
+  xyouts,x0,y0,'4',font=0,color=0,charsize=1.5,alignment=0.5,/normal
 
 
   dx=0.03 & dy=0.02
@@ -153,8 +153,11 @@ end
 Clonlat=load_community_info(/lonlat)
 Cnames=load_community_info(/names)
 
+;find year each realization's 10yr running average > given temp
+TdateNN_lens=load_TSyear()      ;[wl,realization], wl=[0.1,0.2,0.3,0.4....4.0]
+
 ;number of realizations processed
-Nr=40                          
+Nr=40
 if(N_elements(Nad) EQ 0) then begin
    restore,filename=save_dir+"Nad.dat",/verbose
 endif
@@ -198,7 +201,7 @@ endif
 mydevice = !d.name
 !P.MULTI = [0, 1,2,2]
 SET_PLOT, 'ps' 
-DEVICE , filename='./figs/fig_Nad.eps',  /encapsulated,/helvetica, decomposed=0,BITS_PER_PIXEL=8, COLOR=1,xsize=7.5*2.54,ysize=7.*2.54, scale=1
+DEVICE , filename='./figs/fig_Nad.eps',  /encapsulated,/helvetica, decomposed=0,BITS_PER_PIXEL=8, COLOR=1,xsize=18.,ysize=16.8, scale=1
 device, SET_FONT='Helvetica',/tt_font
 
 
@@ -227,12 +230,12 @@ carray[28:31]= 10               ;4+weeks
 nCR=[50,45,30,4,0]
 
 ;ship class
-sk=3
+sk=0
 
 ;2K - 1K
-plot_table,Nadx=Nad2v1,Nd1OW=Nd1OW,NdOW=Nd2OW,plotOW=1,carray=carray,sk=sk,nCR=nCR,pp=p1,dC='+1' 
+plot_table,Nadx=Nad2v1,Nd1OW=Nd1OW,NdOW=Nd2OW,plotOW=0,carray=carray,sk=sk,nCR=nCR,pp=p1,dC='+1' 
 ;4K - 1K
-plot_table,Nadx=Nad4v1,Nd1OW=Nd1OW,NdOW=Nd4OW,plotOW=1,carray=carray,sk=sk,nCR=nCR,pp=p2,dC='+3' 
+plot_table,Nadx=Nad4v1,Nd1OW=Nd1OW,NdOW=Nd4OW,plotOW=0,carray=carray,sk=sk,nCR=nCR,pp=p2,dC='+3' 
 
 ;row labels
 device, SET_FONT='Times',/tt_font
@@ -240,7 +243,7 @@ for k=0,49 do xyouts,-13.,49.2-k,Cnames[k],font=0,color=0,alignment=1,charsize=0
 device, SET_FONT='Helvetica',/tt_font
 
 xyouts,0.94,0.91,'Region'  ,font=0,color=0,/normal,charsize=0.8,alignment=0.,orientation=0
-skstr=[' PC3',' Supply Ship ',' Supply Ship ',' Pleasure Craft ']
+skstr=[' PC3 ',' Supply Ship ',' Supply Ship ',' Pleasure Craft ']
 xyouts,0.5*(p1[2]+p2[0]),0.965,'Northern Community Increases in'+skstr[sk]+ 'Navigability',font=0,color=0,/normal,charsize=1.2,alignment=0.5,orientation=0        
 
 plot_legend
